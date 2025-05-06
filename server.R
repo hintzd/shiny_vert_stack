@@ -1,52 +1,15 @@
-# Load required packages
+# server.R
 library(shiny)
 library(JMbayes2)
 library(dplyr)
 library(ggplot2)
 library(survival)
 library(broom)
-library(networkD3)
-library(plotly)
 
 # Prepare data
 pbc_data <- JMbayes2::pbc2 %>%
   filter(!is.na(serBilir)) %>%
   distinct(id, .keep_all = TRUE)  # one row per patient
-
-# UI
-ui <- fluidPage(
-  titlePanel("Shiny App with Stacked Visuals (pbc2)"),
-  
-  tags$head(tags$style(HTML("
-    .section {
-      margin-bottom: 40px;
-      padding: 20px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      background-color: #f9f9f9;
-    }
-  "))),
-  
-  div(class = "section",
-      h3("Histogram of Age"),
-      plotOutput("plot1", height = "300px")
-  ),
-  
-  div(class = "section",
-      h3("Sankey Plot: Sex to Drug"),
-      sankeyNetworkOutput("plot2", height = "300px")
-  ),
-  
-  div(class = "section",
-      h3("Kaplan-Meier Survival Curve"),
-      plotlyOutput("plot3", height = "300px")
-  ),
-  
-  div(class = "section",
-      h3("Density Plot of Serum Bilirubin"),
-      plotlyOutput("plot4", height = "300px")
-  )
-)
 
 # Server
 server <- function(input, output, session) {
@@ -113,7 +76,3 @@ server <- function(input, output, session) {
     ggplotly(gg)
   })
 }
-
-# Run the app
-shinyApp(ui, server)
-
